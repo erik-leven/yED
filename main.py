@@ -16,7 +16,7 @@ sys.setrecursionlimit(100)
 class yED:
 
     def __init__(self):
-        self.jwt = ""
+        self.jwt = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2MjQ5NTMzNDkuOTIwMDI5OSwiZXhwIjoyMjI0NTY5MTUxLCJ1c2VyX2lkIjoiNDI1YzQ3YTctNWE4Yi00ZjY1LWEyYzQtMTljNzNiZmRmNGQ3IiwidXNlcl9wcm9maWxlIjp7ImVtYWlsIjoiZXJpay5sZXZlbkBzZXNhbS5pbyIsIm5hbWUiOiJlcmlrLmxldmVuQHNlc2FtLmlvIiwicGljdHVyZSI6Imh0dHBzOi8vcy5ncmF2YXRhci5jb20vYXZhdGFyLzZjYmQxYjkyNTQwNWMyOTVkN2ZmYWQ5M2Y2ODRlODQ2P3M9NDgwJnI9cGcmZD1odHRwcyUzQSUyRiUyRmNkbi5hdXRoMC5jb20lMkZhdmF0YXJzJTJGZWEucG5nIn0sInVzZXJfcHJpbmNpcGFsIjoiZ3JvdXA6RXZlcnlvbmUiLCJwcmluY2lwYWxzIjp7IjBiMDhiNTBiLTZkNDAtNGI4MC1iZDI4LWMzMDM2NjA2NWRhNSI6WyJncm91cDpBZG1pbiJdfSwiYXBpX3Rva2VuX2lkIjoiZjFhN2FiZDEtNjBiNS00ZTczLWE2NWMtZmRiYTQ0OTU0OTFiIn0.G6lSz6Hy5DxuFyWexJK5w2l67cV7AsXGdvDxJngMXJCgNAUvvD7JWuQwFDpzN6nKvzlugCm0BHFu63iKlgucCXCESDCmHfejyehJLZ2i9kpo_xZRLP3CFDWL0_6JdV3zCDTsQd2GFFQtmYtxZP25hrlu0q4S4tWqXF93VLS9cJRNOtVaxk3suAZFP6fWep5g-710xDqvg_z-WVk7wid43p3lK9iXIBg2Qaokm8d5MjaovgLPGux3OxK-E0s47g6r7gmqhL1tFmcJ5FW_CZHj_9-dX1wBm-qezrY-ljtjrtK49Ug1RtUAjZPN7_r1OBZew59KhAF1mDdARMtEnRH57g"
         self.pipe_url = "https://datahub-0b08b50b.sesam.cloud/api/pipes"
         self.system_url = "https://datahub-0b08b50b.sesam.cloud/api/systems"
         self.file = ".graphml"
@@ -60,6 +60,11 @@ class yED:
         new_key["for"] = "node"
         self.soup.graphml.append(new_key)
 
+        new_key = self.soup.new_tag("key", id="d6")
+        new_key["yfiles.type"] = "resources"
+        new_key["for"] = "graphml"
+        self.soup.graphml.append(new_key)
+
 
     def add_edge_keys(self):
         new_key = self.soup.new_tag("key", id="d1")
@@ -101,6 +106,43 @@ class yED:
         self.active_nodes.append(name)
         new_tag = self.soup.new_tag("node", id=name)
         self.soup.graphml.graph.append(new_tag)
+
+
+    def add_node_label2(self, pipe_name):
+        node_label = self.soup.new_tag("y:NodeLabel")
+        node_label.string = pipe_name
+        return node_label
+
+    def add_node_metadata(self, pipe_name):
+        node = self.soup.find("node", id=pipe_name)
+        data = self.soup.new_tag("data", key="d5")
+        svg_node = self.soup.new_tag("y:SVGNode")
+        svg_node_properties=self.soup.new_tag("y:SVGNodeProperties", usingVisualBounds="false")
+        svg_node.append(svg_node_properties)
+        border_style=self.soup.new_tag("y:BorderStyle", color="#000000", type="line", width="1.0")
+        svg_node.append(border_style)
+        fill=self.soup.new_tag("y:Fill", color="#E8EEF7", color2="#B7C9E3", transparent="false")
+        svg_node.append(fill)
+        node_label=self.soup.new_tag("y:NodeLabel", alignment="bottom", autoSizePolicy="content", fontFamily="Dialog", fontSize="12", fontStyle="bold", hasBackgroundColor="false", hasLineColor="false", height="17.96875", horizontalTextPosition="center", iconTextGap="4", modelName="eight_pos", modelPosition="s", textColor="#000000", verticalTextPosition="bottom", visible="true", width="156.677734375", x="-33.3388671875", y="58.0")
+        node_label.string=pipe_name
+        svg_node.append(node_label)
+        svg_model = self.soup.new_tag("y:SVGModel", svgBoundsPolicy="0")
+        if "global" in pipe_name.split("-"):
+            geometry=self.soup.new_tag("y:Geometry", height="54.0", width="54.0", x="690.5043637512654", y="578.7984126984129")
+            svg_node.append(geometry)
+            svg_content = self.soup.new_tag("y:SVGContent", refid='3')
+        elif pipe_name in self.tags_dict["pipes"][self.tag].keys():
+            geometry=self.soup.new_tag("y:Geometry", height="54.0", width="90.0", x="690.5043637512654", y="578.7984126984129")
+            svg_node.append(geometry)
+            svg_content = self.soup.new_tag("y:SVGContent", refid='2')
+        else:
+            geometry=self.soup.new_tag("y:Geometry", height="54.0", width="54.0", x="690.5043637512654", y="578.7984126984129")
+            svg_node.append(geometry)
+            svg_content = self.soup.new_tag("y:SVGContent", refid='1')
+        svg_model.append(svg_content)
+        svg_node.append(svg_model)
+        data.append(svg_node)
+        self.soup.find("node", id=pipe_name).append(data)
 
     def add_node_label(self, name, key, tag=None):
         new_node_data = self.soup.new_tag("data", key=key)
@@ -391,6 +433,8 @@ class yED:
             pipe = pipes[pipe_name]
             self.add_node(pipe_name)
             self.add_node_label(pipe_name, "d3")
+            self.add_node_metadata(pipe_name)
+
 
 
             self.is_inbound(pipe_name)
@@ -458,8 +502,8 @@ class yED:
             try:
                 source = pipe["config"]["original"]["sink"]["system"] + "-export"
                 if source in self.active_nodes:
-                    #self.add_edge(pipe_name, source)
-                    #self.add_edge_label(pipe_name, source, "d1") 
+                    self.add_edge(pipe_name, source)
+                    self.add_edge_label(pipe_name, source, "d1") 
                     pass
             except KeyError:
                 continue
@@ -485,6 +529,250 @@ class yED:
         self.soup.find("node", id="labels").graph.append(new_data)
 
 
+    def add_xml_tag(self):
+        return self.soup.new_tag("xml", version="1.0", encoding="UTF-8", standalone="no")
+        
+
+    def add_svg_metadata(self):
+         metadata = self.soup.new_tag("metadata", id="metadata18")
+         metadata.append(self.add_svg_rdf())
+         return metadata
+
+    def add_svg_rdf(self):
+        rdf = self.soup.new_tag("rdf:RDF")
+        work = self.soup.new_tag("Work")
+        work["rdf:about"] = ""
+        dc_format = self.soup.new_tag("dc:format")
+        dc_format.string = "image/svg+xml"
+        dc_type = self.soup.new_tag("dc:type")
+        dc_type["rdf:resource"] = "http://purl.org/dc/dcmitype/StillImage"
+        dc_title = self.soup.new_tag("dc:title")
+        dc_title.string = "Pipe"
+        work.append(dc_format)
+        work.append(dc_type)
+        work.append(dc_title)
+        rdf.append(work)
+        return rdf        
+
+
+
+    def add_svg_tag(self):
+        svg = self.soup.new_tag("svg", id="svg14", version="1.1", viewBox="0 0 96 96", height="96px", width="96px")
+        svg["xmlns:dc"] = "http://purl.org/dc/elements/1.1/"
+        svg["xmlns:rdf"] = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        svg["xmlns:cc"] = "http://creativecommons.org/ns#"
+        svg["xmlns:svg"] = "http://www.w3.org/2000/svg"
+        svg["xmlns"] = "http://www.w3.org/2000/svg"
+        svg.append(self.add_svg_metadata())
+        title = self.soup.new_tag("title", id="title2")
+        title.string="Pipe"
+        svg.append(title)
+        return svg
+
+    def resource1(self):
+        resource = self.soup.new_tag("y:Resource", id="1")
+        string1 = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+        <svg
+           xmlns:dc="http://purl.org/dc/elements/1.1/"
+           xmlns:cc="http://creativecommons.org/ns#"
+           xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+           xmlns:svg="http://www.w3.org/2000/svg"
+           xmlns="http://www.w3.org/2000/svg"
+           id="svg14"
+           version="1.1"
+           viewBox="0 0 96 96"
+           height="96px"
+           width="96px">
+          <metadata
+             id="metadata18">
+            <rdf:RDF>
+              <cc:Work
+                 rdf:about="">
+                <dc:format>image/svg+xml</dc:format>
+                <dc:type
+                   rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+                <dc:title>Pipe</dc:title>
+              </cc:Work>
+            </rdf:RDF>
+          </metadata>
+          <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
+          <title
+             id="title2">Pipe</title>
+          <desc
+             id="desc4">Created with Sketch.</desc>
+          <defs
+             id="defs6" />
+          <path
+             style="fill:#000000;fill-rule:nonzero;stroke:none;stroke-width:1;fill-opacity:1;stroke-opacity:1"
+             id="Rectangle-6-Copy-4"
+             d="M 16.37696,27 18,29.531541 V 66.472129 L 16.35266,69 H 10.634859 L 9,66.485642 V 29.57191 L 10.69509,27 Z M 8.6642009,21 C 7.9111895,21 7.204463,21.329809 6.7663814,21.885657 L 3.4355139,26.111941 C 3.1522811,26.471314 3,26.90209 3,27.343931 v 41.367064 c 0,0.437217 0.1491135,0.863717 0.4268697,1.220948 l 3.243339,4.171358 C 7.1074015,74.665587 7.8183925,75 8.5766724,75 h 9.8289106 c 0.757408,0 1.467694,-0.333648 1.905039,-0.894869 l 3.261084,-4.184774 C 23.850365,69.562769 24,69.135562 24,68.69758 V 27.315329 c 0,-0.43244 -0.145876,-0.854514 -0.418018,-1.209483 L 20.363765,21.908164 C 19.927565,21.339207 19.212179,21 18.44845,21 Z" />
+          <path
+             style="fill:#000000;fill-rule:nonzero;stroke:none;stroke-width:1;fill-opacity:1;stroke-opacity:1"
+             id="Rectangle-6-Copy-5"
+             d="M 85.37696,27 87,29.531541 V 66.472129 L 85.35266,69 H 79.634859 L 78,66.485642 V 29.57191 L 79.69509,27 Z m -7.712759,-6 c -0.753011,0 -1.459738,0.329809 -1.89782,0.885657 l -3.330867,4.226284 C 72.152281,26.471314 72,26.90209 72,27.343931 v 41.367064 c 0,0.437217 0.149113,0.863717 0.42687,1.220948 l 3.243339,4.171358 C 76.107401,74.665587 76.818393,75 77.576672,75 h 9.828911 c 0.757408,0 1.467694,-0.333648 1.905039,-0.894869 l 3.261084,-4.184774 C 92.850365,69.562769 93,69.135562 93,68.69758 V 27.315329 c 0,-0.43244 -0.145876,-0.854514 -0.418018,-1.209483 L 89.363765,21.908164 C 88.927565,21.339207 88.212179,21 87.44845,21 Z" />
+          <path
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:6;stroke-linecap:square;fill-opacity:1;stroke-opacity:1"
+             id="Line"
+             d="m 22.5,30 h 51" />
+          <path
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:6;stroke-linecap:square;fill-opacity:1;stroke-opacity:1"
+             id="Line-Copy"
+             d="m 22.5,66 h 51" />
+        </svg>"""
+        #string2 = '<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"  xmlns:svg="http://www.w3.org/2000/svg"   xmlns="http://www.w3.org/2000/svg"   id="svg18"   version="1.1"   viewBox="0 0 96 96"   height="96px"   width="96px">'
+        resource.string = string1        
+        return resource
+
+    def resource2(self):
+        resource = self.soup.new_tag("y:Resource", id="2")
+        xml = self.soup.new_tag("xml", version="1.0", encoding="UTF-8", standalone="no")
+        string = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+        <svg
+           xmlns="http://www.w3.org/2000/svg"
+           id="svg14"
+           version="1.1"
+           viewBox="0 0 96 96"
+           height="96px"
+           width="96px">
+         
+          <path
+             style="fill:#000000;fill-rule:nonzero;stroke:none;stroke-width:1;fill-opacity:1;stroke-opacity:1"
+             id="Rectangle-6-Copy-4"
+             d="M 16.37696,27 18,29.531541 V 66.472129 L 16.35266,69 H 10.634859 L 9,66.485642 V 29.57191 L 10.69509,27 Z M 8.6642009,21 C 7.9111895,21 7.204463,21.329809 6.7663814,21.885657 L 3.4355139,26.111941 C 3.1522811,26.471314 3,26.90209 3,27.343931 v 41.367064 c 0,0.437217 0.1491135,0.863717 0.4268697,1.220948 l 3.243339,4.171358 C 7.1074015,74.665587 7.8183925,75 8.5766724,75 h 9.8289106 c 0.757408,0 1.467694,-0.333648 1.905039,-0.894869 l 3.261084,-4.184774 C 23.850365,69.562769 24,69.135562 24,68.69758 V 27.315329 c 0,-0.43244 -0.145876,-0.854514 -0.418018,-1.209483 L 20.363765,21.908164 C 19.927565,21.339207 19.212179,21 18.44845,21 Z" />
+          <path
+             style="fill:#000000;fill-rule:nonzero;stroke:none;stroke-width:1;fill-opacity:1;stroke-opacity:1"
+             id="Rectangle-6-Copy-5"
+             d="M 85.37696,27 87,29.531541 V 66.472129 L 85.35266,69 H 79.634859 L 78,66.485642 V 29.57191 L 79.69509,27 Z m -7.712759,-6 c -0.753011,0 -1.459738,0.329809 -1.89782,0.885657 l -3.330867,4.226284 C 72.152281,26.471314 72,26.90209 72,27.343931 v 41.367064 c 0,0.437217 0.149113,0.863717 0.42687,1.220948 l 3.243339,4.171358 C 76.107401,74.665587 76.818393,75 77.576672,75 h 9.828911 c 0.757408,0 1.467694,-0.333648 1.905039,-0.894869 l 3.261084,-4.184774 C 92.850365,69.562769 93,69.135562 93,68.69758 V 27.315329 c 0,-0.43244 -0.145876,-0.854514 -0.418018,-1.209483 L 89.363765,21.908164 C 88.927565,21.339207 88.212179,21 87.44845,21 Z" />
+          <path
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:6;stroke-linecap:square;fill-opacity:1;stroke-opacity:1"
+             id="Line"
+             d="m 22.5,30 h 51" />
+          <path
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:6;stroke-linecap:square;fill-opacity:1;stroke-opacity:1"
+             id="Line-Copy"
+             d="m 22.5,66 h 51" />
+        </svg>"""
+        string = self.soup.new_string(string)
+        resource.append(string)
+        #resource.string = "hey"
+        #print(resource)
+        #ss       
+        return resource
+
+    def resource3(self):
+        resource = self.soup.new_tag("y:Resource", id="3")
+        string1 = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'
+        #string2 = '<svg   xmlns:dc="http://purl.org/dc/elements/1.1/"   xmlns:cc="http://creativecommons.org/ns#"   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"   xmlns:svg="http://www.w3.org/2000/svg"   xmlns="http://www.w3.org/2000/svg"   id="svg14"   version="1.1"   viewBox="0 0 96 96"   height="96px"   width="96px">  <'
+        string2 = """<svg
+           xmlns:dc="http://purl.org/dc/elements/1.1/"
+           xmlns:cc="http://creativecommons.org/ns#"
+           xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+           xmlns:svg="http://www.w3.org/2000/svg"
+           xmlns="http://www.w3.org/2000/svg"
+           id="svg20"
+           version="1.1"
+           fill="none"
+           viewBox="0 0 104 104"
+           height="104"
+           width="104">
+          <metadata
+             id="metadata26">
+            <rdf:RDF>
+              <cc:Work
+                 rdf:about="">
+                <dc:format>image/svg+xml</dc:format>
+                <dc:type
+                   rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+                <dc:title></dc:title>
+              </cc:Work>
+            </rdf:RDF>
+          </metadata>
+          <defs
+             id="defs24" />
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-opacity:1"
+             id="path2"
+             fill="#FF00FF"
+             d="M48.9042 29.6499V37.1883C42.5158 38.8267 37.7954 44.6053 37.7954 51.4824C37.7954 54.0538 38.4553 56.4715 39.6155 58.5767L34.2361 63.937C31.8087 60.3887 30.3895 56.1007 30.3895 51.4824C30.3895 40.5769 38.3029 31.5131 48.72 29.6815C48.7813 29.6707 48.8427 29.6601 48.9042 29.6499V29.6499ZM56.3101 29.6499C65.6137 31.2052 72.9567 38.5221 74.5175 47.7927H66.9522C65.6126 42.6063 61.5149 38.5232 56.3101 37.1883V29.6499ZM39.366 69.2616L44.6888 63.9577C46.9791 65.4041 49.6949 66.2415 52.6071 66.2415C59.5088 66.2415 65.308 61.5379 66.9522 55.1722H74.5175C72.7546 65.6427 63.6159 73.6211 52.6071 73.6211C47.6455 73.6211 43.0638 72.0005 39.366 69.2616Z" />
+          <path
+             style="fill:none;fill-opacity:1;stroke:#000000;stroke-opacity:1"
+             id="path4"
+             stroke-linejoin="round"
+             stroke-linecap="round"
+             stroke-width="7.35467"
+             stroke="#FF00FF"
+             d="M52.4535 4V18.6571" />
+          <path
+             style="fill:none;fill-opacity:1;stroke:#000000;stroke-opacity:1"
+             id="path6"
+             stroke-linejoin="round"
+             stroke-linecap="round"
+             stroke-width="7.35467"
+             stroke="#FF00FF"
+             d="M100 51.5779L85.2907 51.5779" />
+          <path
+             style="fill:none;fill-opacity:1;stroke:#000000;stroke-opacity:1"
+             id="path8"
+             stroke-linejoin="round"
+             stroke-linecap="round"
+             stroke-width="7.35467"
+             stroke="#FF00FF"
+             d="M18.7093 51.5779L3.99999 51.5779" />
+          <path
+             style="fill:none;fill-opacity:1;stroke:#000000;stroke-opacity:1"
+             id="path10"
+             stroke-linejoin="round"
+             stroke-linecap="round"
+             stroke-width="7.35467"
+             stroke="#FF00FF"
+             d="M52.4535 85.3429V100" />
+          <path
+             style="fill:none;fill-opacity:1;stroke:#000000;stroke-opacity:1"
+             id="path12"
+             stroke-linejoin="round"
+             stroke-linecap="round"
+             stroke-width="7.35467"
+             stroke="#FF00FF"
+             d="M18.65 17.9521L29.0511 28.3162" />
+          <path
+             style="fill:none;fill-opacity:1;stroke:#000000;stroke-opacity:1"
+             id="path14"
+             stroke-linejoin="round"
+             stroke-linecap="round"
+             stroke-width="7.35467"
+             stroke="#FF00FF"
+             d="M75.8559 74.9547L86.257 85.3188" />
+          <path
+             style="stroke-width:7.355;stroke-miterlimit:4;stroke-dasharray:none;fill:none;fill-opacity:1;stroke:#000000;stroke-opacity:1"
+             id="path16"
+             stroke-linejoin="round"
+             stroke-linecap="round"
+             stroke-width="7.35467"
+             stroke="#FF00FF"
+             d="M75.8559 28.3162L86.257 17.9521" />
+          <path
+             style="fill:none;fill-opacity:1;stroke:#000000;stroke-opacity:1"
+             id="path18"
+             stroke-linejoin="round"
+             stroke-linecap="round"
+             stroke-width="7.35467"
+             stroke="#FF00FF"
+             d="M18.7179 85.3047L29.119 74.9406" />
+        </svg>"""
+        resource.string = string1 + string2       
+        return resource
+
+    def create_resources(self):
+        data = self.soup.new_tag("data", key="d6")
+        resources = self.soup.new_tag("y:Resources")
+        #resource1 = self.soup.new_tag("y:Resource", id="1")
+        #resource1.string = '<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"  xmlns:svg="http://www.w3.org/2000/svg"   xmlns="http://www.w3.org/2000/svg"   id="svg18"   version="1.1"   viewBox="0 0 96 96"   height="96px"   width="96px">'       
+        resources.append(self.resource1())
+        resources.append(self.resource2())
+        resources.append(self.resource3())
+        data.append(resources)
+        self.soup.graphml.append(data)
 
     def main(self, pipes, systems, tag):
         self.tag = tag
@@ -497,6 +785,7 @@ class yED:
         self.soup = BeautifulSoup(open(file_name), "html.parser")
         self.create_graphml()
         #print("create_graphml")
+        self.create_resources()
         self.add_node_keys()
         #print("add_node_keys")
         self.add_edge_keys()
@@ -510,13 +799,14 @@ class yED:
         self.create_all_system_nodes(systems)
         #print("create_all_system_nodes")
         self.create_all_pipe_nodes(pipes)
+
         #print("create_all_pipe_nodes")
         self.create_all_edges(pipes)
         #print("create_all_edges")
         self.remove_unused_systems(systems)
         print("saving file ", file_name)
         with open(file_name, "w") as file:
-            file.write(str(self.soup.prettify()))
+            file.write(str(self.soup))
         print("----------------------------------------------------")
         self.active_nodes = []
 
