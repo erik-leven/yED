@@ -113,8 +113,8 @@ class yED:
         node_label.string = pipe_name
         return node_label
 
-    def add_node_metadata(self, pipe_name):
-        node = self.soup.find("node", id=pipe_name)
+    def add_node_metadata(self, object_name):
+        node = self.soup.find("node", id=object_name)
         data = self.soup.new_tag("data", key="d5")
         svg_node = self.soup.new_tag("y:SVGNode")
         svg_node_properties=self.soup.new_tag("y:SVGNodeProperties", usingVisualBounds="false")
@@ -124,14 +124,14 @@ class yED:
         fill=self.soup.new_tag("y:Fill", color="#E8EEF7", color2="#B7C9E3", transparent="false")
         svg_node.append(fill)
         node_label=self.soup.new_tag("y:NodeLabel", alignment="bottom", autoSizePolicy="content", fontFamily="Dialog", fontSize="12", fontStyle="bold", hasBackgroundColor="false", hasLineColor="false", height="17.96875", horizontalTextPosition="center", iconTextGap="4", modelName="eight_pos", modelPosition="s", textColor="#000000", verticalTextPosition="bottom", visible="true", width="156.677734375", x="-33.3388671875", y="58.0")
-        node_label.string=pipe_name
+        node_label.string=object_name
         svg_node.append(node_label)
         svg_model = self.soup.new_tag("y:SVGModel", svgBoundsPolicy="0")
-        if "global" in pipe_name.split("-"):
+        if "global" in object_name.split("-"):
             geometry=self.soup.new_tag("y:Geometry", height="54.0", width="54.0", x="690.5043637512654", y="578.7984126984129")
             svg_node.append(geometry)
             svg_content = self.soup.new_tag("y:SVGContent", refid='3')
-        elif pipe_name in self.tags_dict["pipes"][self.tag].keys():
+        elif object_name in self.tags_dict["pipes"][self.tag].keys() or "pipe" in object_name.split("-"):
             geometry=self.soup.new_tag("y:Geometry", height="54.0", width="90.0", x="690.5043637512654", y="578.7984126984129")
             svg_node.append(geometry)
             svg_content = self.soup.new_tag("y:SVGContent", refid='2')
@@ -139,10 +139,11 @@ class yED:
             geometry=self.soup.new_tag("y:Geometry", height="54.0", width="54.0", x="690.5043637512654", y="578.7984126984129")
             svg_node.append(geometry)
             svg_content = self.soup.new_tag("y:SVGContent", refid='1')
+
         svg_model.append(svg_content)
         svg_node.append(svg_model)
         data.append(svg_node)
-        self.soup.find("node", id=pipe_name).append(data)
+        self.soup.find("node", id=object_name).append(data)
 
     def add_node_label(self, name, key, tag=None):
         new_node_data = self.soup.new_tag("data", key=key)
@@ -208,10 +209,10 @@ class yED:
         new_ProxyAutoBoundsNode = self.soup.new_tag("y:ProxyAutoBoundsNode")
         new_Realizers = self.soup.new_tag("y:Realizers", active="0")
         new_GroupNode = self.soup.new_tag("y:GroupNode")
-        new_NodeLabel = self.soup.new_tag("y:NodeLabel")
-        new_Fill = self.soup.new_tag("y:Fill", color="#FF0000") #red
-        new_NodeLabel.string = "import-system-group"
-        new_GroupNode.append(new_NodeLabel)
+        #new_NodeLabel = self.soup.new_tag("y:NodeLabel")
+        new_Fill = self.soup.new_tag("y:Fill", color="#9999ff")
+        #new_NodeLabel.string = "import-system-group"
+        #new_GroupNode.append(new_NodeLabel)
         new_GroupNode.append(new_Fill)
         new_Realizers.append(new_GroupNode)
         new_ProxyAutoBoundsNode.append(new_Realizers)
@@ -227,10 +228,10 @@ class yED:
         new_ProxyAutoBoundsNode = self.soup.new_tag("y:ProxyAutoBoundsNode")
         new_Realizers = self.soup.new_tag("y:Realizers", active="0")
         new_GroupNode = self.soup.new_tag("y:GroupNode")
-        new_NodeLabel = self.soup.new_tag("y:NodeLabel")
-        new_Fill = self.soup.new_tag("y:Fill", color="#7400ff") #purple
-        new_NodeLabel.string = "inbound-group"
-        new_GroupNode.append(new_NodeLabel)
+        #new_NodeLabel = self.soup.new_tag("y:NodeLabel")
+        #new_Fill = self.soup.new_tag("y:Fill", color="#7400ff") #purple
+        #new_NodeLabel.string = "inbound-group"
+        #new_GroupNode.append(new_NodeLabel)
         new_Realizers.append(new_GroupNode)
         new_ProxyAutoBoundsNode.append(new_Realizers)
         new_data.append(new_ProxyAutoBoundsNode)
@@ -245,10 +246,10 @@ class yED:
         new_ProxyAutoBoundsNode = self.soup.new_tag("y:ProxyAutoBoundsNode")
         new_Realizers = self.soup.new_tag("y:Realizers", active="0")
         new_GroupNode = self.soup.new_tag("y:GroupNode")
-        new_NodeLabel = self.soup.new_tag("y:NodeLabel")
+        #new_NodeLabel = self.soup.new_tag("y:NodeLabel", alignment="left", horizontalTextPosition="left",verticalTextPosition="left")
         new_Fill = self.soup.new_tag("y:Fill", color="#f0ff00") #yellow
-        new_NodeLabel.string = "global-group"
-        new_GroupNode.append(new_NodeLabel)
+        #new_NodeLabel.string = "global-group-test"
+        #new_GroupNode.append(new_NodeLabel)
         new_GroupNode.append(new_Fill)
         new_Realizers.append(new_GroupNode)
         new_ProxyAutoBoundsNode.append(new_Realizers)
@@ -264,11 +265,11 @@ class yED:
         new_ProxyAutoBoundsNode = self.soup.new_tag("y:ProxyAutoBoundsNode")
         new_Realizers = self.soup.new_tag("y:Realizers", active="0")
         new_GroupNode = self.soup.new_tag("y:GroupNode")
-        new_NodeLabel = self.soup.new_tag("y:NodeLabel")
-        new_Fill = self.soup.new_tag("y:Fill", color="#23ff00") #green
-        new_NodeLabel.string = "outbound-group"
-        new_GroupNode.append(new_NodeLabel)
-        new_GroupNode.append(new_Fill)
+        #new_NodeLabel = self.soup.new_tag("y:NodeLabel")
+        #new_Fill = self.soup.new_tag("y:Fill", color="#23ff00") #green
+        #new_NodeLabel.string = "outbound-group"
+        #new_GroupNode.append(new_NodeLabel)
+        #new_GroupNode.append(new_Fill)
         new_Realizers.append(new_GroupNode)
         new_ProxyAutoBoundsNode.append(new_Realizers)
         new_data.append(new_ProxyAutoBoundsNode)
@@ -283,10 +284,10 @@ class yED:
         new_ProxyAutoBoundsNode = self.soup.new_tag("y:ProxyAutoBoundsNode")
         new_Realizers = self.soup.new_tag("y:Realizers", active="0")
         new_GroupNode = self.soup.new_tag("y:GroupNode")
-        new_NodeLabel = self.soup.new_tag("y:NodeLabel")
-        new_Fill = self.soup.new_tag("y:Fill", color="#0036ff") #blue
-        new_NodeLabel.string = "export-system-group"
-        new_GroupNode.append(new_NodeLabel)
+        #new_NodeLabel = self.soup.new_tag("y:NodeLabel")
+        new_Fill = self.soup.new_tag("y:Fill", color="#9999ff")
+        #new_NodeLabel.string = "export-system-group"
+        #new_GroupNode.append(new_NodeLabel)
         new_GroupNode.append(new_Fill)
         new_Realizers.append(new_GroupNode)
         new_ProxyAutoBoundsNode.append(new_Realizers)
@@ -302,16 +303,52 @@ class yED:
         new_ProxyAutoBoundsNode = self.soup.new_tag("y:ProxyAutoBoundsNode")
         new_Realizers = self.soup.new_tag("y:Realizers", active="0")
         new_GroupNode = self.soup.new_tag("y:GroupNode")
-        new_NodeLabel = self.soup.new_tag("y:NodeLabel")
-        new_NodeLabel.string = "labels"
-        new_GroupNode.append(new_NodeLabel)
+        #new_NodeLabel = self.soup.new_tag("y:NodeLabel")
+        #new_NodeLabel.string = "labels"
+        #new_GroupNode.append(new_NodeLabel)
         new_Realizers.append(new_GroupNode)
         new_ProxyAutoBoundsNode.append(new_Realizers)
         new_data.append(new_ProxyAutoBoundsNode)
         new_group.append(new_data)
-        new_graph = self.soup.new_tag("graph", edgedefault="directed", id="export-system-group-graph")
+        new_graph = self.soup.new_tag("graph", edgedefault="directed", id="labels")
         new_group.append(new_graph)        
         self.soup.graphml.graph.append(new_group)
+
+        new_group = self.soup.new_tag("node", id="source-pipes-group-graph")
+        new_group["yfiles.foldertype"]="group"
+        new_data = self.soup.new_tag("data", key="d5")
+        new_ProxyAutoBoundsNode = self.soup.new_tag("y:ProxyAutoBoundsNode")
+        new_Realizers = self.soup.new_tag("y:Realizers", active="0")
+        new_GroupNode = self.soup.new_tag("y:GroupNode")
+        #new_NodeLabel = self.soup.new_tag("y:NodeLabel")
+        #new_NodeLabel.string = "source-pipes-group-graph"
+        #new_GroupNode.append(new_NodeLabel)
+        new_Realizers.append(new_GroupNode)
+        new_ProxyAutoBoundsNode.append(new_Realizers)
+        new_data.append(new_ProxyAutoBoundsNode)
+        new_group.append(new_data)
+        new_graph = self.soup.new_tag("graph", edgedefault="directed", id="source-pipes-group-graph")
+        new_group.append(new_graph)        
+        self.soup.graphml.graph.append(new_group)
+
+        new_group = self.soup.new_tag("node", id="endpoint-pipes-group-graph")
+        new_group["yfiles.foldertype"]="group"
+        new_data = self.soup.new_tag("data", key="d5")
+        new_ProxyAutoBoundsNode = self.soup.new_tag("y:ProxyAutoBoundsNode")
+        new_Realizers = self.soup.new_tag("y:Realizers", active="0")
+        new_GroupNode = self.soup.new_tag("y:GroupNode")
+        #new_NodeLabel = self.soup.new_tag("y:NodeLabel")
+        #new_NodeLabel.string = "endpoint-pipes-group-graph"
+        #new_GroupNode.append(new_NodeLabel)
+        new_Realizers.append(new_GroupNode)
+        new_ProxyAutoBoundsNode.append(new_Realizers)
+        new_data.append(new_ProxyAutoBoundsNode)
+        new_group.append(new_data)
+        new_graph = self.soup.new_tag("graph", edgedefault="directed", id="endpoint-pipes-group-graph")
+        new_group.append(new_graph)        
+        self.soup.graphml.graph.append(new_group)
+
+
 
     def initialize_tag_run(self, pipes, systems):
         """
@@ -366,6 +403,7 @@ class yED:
                 name = system_name + direction
                 self.add_system_node(name)
                 self.add_system_node_label(name, "d3")
+                self.add_node_metadata(name)
                 if direction == "-import":
                     self.soup.find("node", id="import-system-group").graph.append(self.soup.find("node", id=name))
                 else:
@@ -430,6 +468,8 @@ class yED:
         for pipe_name in pipes.keys():
             #if not "o365-term" == pipe_key:
             #    continue
+            source_pipe = False
+            endpoint_pipe = False
             pipe = pipes[pipe_name]
             self.add_node(pipe_name)
             self.add_node_label(pipe_name, "d3")
@@ -440,15 +480,32 @@ class yED:
             self.is_inbound(pipe_name)
             try: 
                 inbound = self.tags_dict["pipes"][self.tag][pipe_name]["inbound"]
-                #print(inbound)
-                #print(name)
             except KeyError:
                 inbound = False
 
+            try:
+                if self.tags_dict["pipes"][self.tag][pipe_name]["config"]["original"]["source"]["alternatives"]["prod"]["system"]:
+                    source_pipe = True
+                elif self.tags_dict["pipes"][self.tag][pipe_name]["config"]["original"]["source"]["system"]:
+                    source_pipe = True
+                else:
+                    pass
+            except KeyError:
+                pass
 
 
-            if "global" in pipe_name.split("-") or "merge" in pipe_name.split("-"):
+            if "global" in pipe_name.split("-"):
                 self.soup.find("node", id="global-group").graph.append(self.soup.find("node", id=pipe_name))
+
+            #elif "merge" in pipe_name.split("-"):
+            #    self.soup.find("node", id="merge-pipes-group-graph").graph.append(self.soup.find("node", id=pipe_name))
+
+            elif source_pipe:
+                self.soup.find("node", id="source-pipes-group-graph").graph.append(self.soup.find("node", id=pipe_name))
+
+            elif pipe_name.split("-")[-1] == "endpoint":
+                self.soup.find("node", id="endpoint-pipes-group-graph").graph.append(self.soup.find("node", id=pipe_name))
+
             elif inbound:
                 self.soup.find("node", id="inbound-group").graph.append(self.soup.find("node", id=pipe_name))
 
@@ -484,6 +541,7 @@ class yED:
                                     print("wtf")
                             except KeyError:
                                 continue
+
 
             if type(source) == list:
                 for s in source:
@@ -571,61 +629,72 @@ class yED:
 
     def resource1(self):
         resource = self.soup.new_tag("y:Resource", id="1")
-        string1 = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+        string = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
         <svg
            xmlns:dc="http://purl.org/dc/elements/1.1/"
            xmlns:cc="http://creativecommons.org/ns#"
            xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
            xmlns:svg="http://www.w3.org/2000/svg"
            xmlns="http://www.w3.org/2000/svg"
-           id="svg14"
+           id="svg18"
            version="1.1"
            viewBox="0 0 96 96"
            height="96px"
            width="96px">
           <metadata
-             id="metadata18">
+             id="metadata22">
             <rdf:RDF>
               <cc:Work
                  rdf:about="">
                 <dc:format>image/svg+xml</dc:format>
                 <dc:type
                    rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-                <dc:title>Pipe</dc:title>
+                <dc:title>System</dc:title>
               </cc:Work>
             </rdf:RDF>
           </metadata>
           <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
           <title
-             id="title2">Pipe</title>
+             id="title2">System</title>
           <desc
              id="desc4">Created with Sketch.</desc>
+          <path
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+             id="Line-Copy-3"
+             d="M 48,30.890369 V 44.560324" />
           <defs
              id="defs6" />
           <path
-             style="fill:#000000;fill-rule:nonzero;stroke:none;stroke-width:1;fill-opacity:1;stroke-opacity:1"
-             id="Rectangle-6-Copy-4"
-             d="M 16.37696,27 18,29.531541 V 66.472129 L 16.35266,69 H 10.634859 L 9,66.485642 V 29.57191 L 10.69509,27 Z M 8.6642009,21 C 7.9111895,21 7.204463,21.329809 6.7663814,21.885657 L 3.4355139,26.111941 C 3.1522811,26.471314 3,26.90209 3,27.343931 v 41.367064 c 0,0.437217 0.1491135,0.863717 0.4268697,1.220948 l 3.243339,4.171358 C 7.1074015,74.665587 7.8183925,75 8.5766724,75 h 9.8289106 c 0.757408,0 1.467694,-0.333648 1.905039,-0.894869 l 3.261084,-4.184774 C 23.850365,69.562769 24,69.135562 24,68.69758 V 27.315329 c 0,-0.43244 -0.145876,-0.854514 -0.418018,-1.209483 L 20.363765,21.908164 C 19.927565,21.339207 19.212179,21 18.44845,21 Z" />
-          <path
-             style="fill:#000000;fill-rule:nonzero;stroke:none;stroke-width:1;fill-opacity:1;stroke-opacity:1"
-             id="Rectangle-6-Copy-5"
-             d="M 85.37696,27 87,29.531541 V 66.472129 L 85.35266,69 H 79.634859 L 78,66.485642 V 29.57191 L 79.69509,27 Z m -7.712759,-6 c -0.753011,0 -1.459738,0.329809 -1.89782,0.885657 l -3.330867,4.226284 C 72.152281,26.471314 72,26.90209 72,27.343931 v 41.367064 c 0,0.437217 0.149113,0.863717 0.42687,1.220948 l 3.243339,4.171358 C 76.107401,74.665587 76.818393,75 77.576672,75 h 9.828911 c 0.757408,0 1.467694,-0.333648 1.905039,-0.894869 l 3.261084,-4.184774 C 92.850365,69.562769 93,69.135562 93,68.69758 V 27.315329 c 0,-0.43244 -0.145876,-0.854514 -0.418018,-1.209483 L 89.363765,21.908164 C 88.927565,21.339207 88.212179,21 87.44845,21 Z" />
-          <path
-             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:6;stroke-linecap:square;fill-opacity:1;stroke-opacity:1"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
              id="Line"
-             d="m 22.5,30 h 51" />
+             d="m 24.5,45 h 47" />
           <path
-             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:6;stroke-linecap:square;fill-opacity:1;stroke-opacity:1"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+             id="Combined-Shape"
+             d="M 62.514719,6 H 33.455844 L 30,9.4558441 V 26.514719 L 33.485281,30 h 29 L 66,26.485281 V 9.4852814 Z" />
+          <path
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+             id="Combined-Shape-Copy"
+             d="M 86.514719,63 H 57.455844 L 54,66.455844 V 83.514719 L 57.485281,87 h 29 L 90,83.485281 v -17 z" />
+          <path
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+             id="Combined-Shape-Copy-2"
+             d="M 38.514719,63 H 9.4558441 L 6,66.455844 V 83.514719 L 9.4852814,87 H 38.485281 L 42,83.485281 v -17 z" />
+          <path
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+             id="path13"
+             d="m 24,45.5 v 15" />
+          <path
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
              id="Line-Copy"
-             d="m 22.5,66 h 51" />
+             d="m 72,45.5 v 15" />
         </svg>"""
         #string2 = '<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"  xmlns:svg="http://www.w3.org/2000/svg"   xmlns="http://www.w3.org/2000/svg"   id="svg18"   version="1.1"   viewBox="0 0 96 96"   height="96px"   width="96px">'
-        resource.string = string1        
+        resource.string = string      
         return resource
 
     def resource2(self):
         resource = self.soup.new_tag("y:Resource", id="2")
-        xml = self.soup.new_tag("xml", version="1.0", encoding="UTF-8", standalone="no")
         string = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 
         <svg
@@ -662,9 +731,9 @@ class yED:
 
     def resource3(self):
         resource = self.soup.new_tag("y:Resource", id="3")
-        string1 = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'
         #string2 = '<svg   xmlns:dc="http://purl.org/dc/elements/1.1/"   xmlns:cc="http://creativecommons.org/ns#"   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"   xmlns:svg="http://www.w3.org/2000/svg"   xmlns="http://www.w3.org/2000/svg"   id="svg14"   version="1.1"   viewBox="0 0 96 96"   height="96px"   width="96px">  <'
-        string2 = """<svg
+        string = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+        <svg
            xmlns:dc="http://purl.org/dc/elements/1.1/"
            xmlns:cc="http://creativecommons.org/ns#"
            xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -760,7 +829,7 @@ class yED:
              stroke="#FF00FF"
              d="M18.7179 85.3047L29.119 74.9406" />
         </svg>"""
-        resource.string = string1 + string2       
+        resource.string = string      
         return resource
 
     def create_resources(self):
@@ -774,11 +843,27 @@ class yED:
         data.append(resources)
         self.soup.graphml.append(data)
 
+    def create_label_group(self):
+        self.add_node("pipe")
+        self.add_system_node_label("pipe", "d3")
+        self.add_node_metadata("pipe")
+        self.soup.find("node", id="labels").graph.append(self.soup.find("node", id="pipe"))
+
+        self.add_node("global-pipe")
+        self.add_system_node_label("global-pipe", "d3")
+        self.add_node_metadata("global-pipe")
+        self.soup.find("node", id="labels").graph.append(self.soup.find("node", id="global-pipe"))
+
+        self.add_node("system")
+        self.add_system_node_label("system", "d3")
+        self.add_node_metadata("system")
+        self.soup.find("node", id="labels").graph.append(self.soup.find("node", id="system"))
+
     def main(self, pipes, systems, tag):
         self.tag = tag
-        if not tag == "comos":
-            return
-        print("Processing tag ", tag)
+        #if not tag == "comos":
+        #    return
+        print("Processing tag", tag)
         #self.id_list= list(pipes.keys())
         file_name = tag + self.file
         open(file_name, 'w').write('<?xml version="1.0" encoding="UTF-8"?>')
@@ -803,8 +888,9 @@ class yED:
         #print("create_all_pipe_nodes")
         self.create_all_edges(pipes)
         #print("create_all_edges")
+        self.create_label_group()
         self.remove_unused_systems(systems)
-        print("saving file ", file_name)
+        print("saving file", file_name)
         with open(file_name, "w") as file:
             file.write(str(self.soup))
         print("----------------------------------------------------")
@@ -834,9 +920,9 @@ class yED:
             else:
                 self.find_hops_dataset(pipe["config"]["original"]["transform"]["rules"]["default"])
             for dataset in self.hops_dataset:
-                self.add_edge(dataset, name)
-                self.add_edge_label(dataset, name, "d1") 
-                self.add_edge_linestyle(dataset, name)
+                self.add_edge(name, dataset)
+                self.add_edge_label(name, dataset, "d1") 
+                self.add_edge_linestyle(name, dataset)
             self.hops_dataset = []
 
         except KeyError:
