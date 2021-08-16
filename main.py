@@ -16,7 +16,7 @@ sys.setrecursionlimit(100)
 class yED:
 
     def __init__(self):
-        self.jwt = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2MjQ5NTMzNDkuOTIwMDI5OSwiZXhwIjoyMjI0NTY5MTUxLCJ1c2VyX2lkIjoiNDI1YzQ3YTctNWE4Yi00ZjY1LWEyYzQtMTljNzNiZmRmNGQ3IiwidXNlcl9wcm9maWxlIjp7ImVtYWlsIjoiZXJpay5sZXZlbkBzZXNhbS5pbyIsIm5hbWUiOiJlcmlrLmxldmVuQHNlc2FtLmlvIiwicGljdHVyZSI6Imh0dHBzOi8vcy5ncmF2YXRhci5jb20vYXZhdGFyLzZjYmQxYjkyNTQwNWMyOTVkN2ZmYWQ5M2Y2ODRlODQ2P3M9NDgwJnI9cGcmZD1odHRwcyUzQSUyRiUyRmNkbi5hdXRoMC5jb20lMkZhdmF0YXJzJTJGZWEucG5nIn0sInVzZXJfcHJpbmNpcGFsIjoiZ3JvdXA6RXZlcnlvbmUiLCJwcmluY2lwYWxzIjp7IjBiMDhiNTBiLTZkNDAtNGI4MC1iZDI4LWMzMDM2NjA2NWRhNSI6WyJncm91cDpBZG1pbiJdfSwiYXBpX3Rva2VuX2lkIjoiZjFhN2FiZDEtNjBiNS00ZTczLWE2NWMtZmRiYTQ0OTU0OTFiIn0.G6lSz6Hy5DxuFyWexJK5w2l67cV7AsXGdvDxJngMXJCgNAUvvD7JWuQwFDpzN6nKvzlugCm0BHFu63iKlgucCXCESDCmHfejyehJLZ2i9kpo_xZRLP3CFDWL0_6JdV3zCDTsQd2GFFQtmYtxZP25hrlu0q4S4tWqXF93VLS9cJRNOtVaxk3suAZFP6fWep5g-710xDqvg_z-WVk7wid43p3lK9iXIBg2Qaokm8d5MjaovgLPGux3OxK-E0s47g6r7gmqhL1tFmcJ5FW_CZHj_9-dX1wBm-qezrY-ljtjrtK49Ug1RtUAjZPN7_r1OBZew59KhAF1mDdARMtEnRH57g"
+        self.jwt = ""
         self.pipe_url = "https://datahub-0b08b50b.sesam.cloud/api/pipes"
         self.system_url = "https://datahub-0b08b50b.sesam.cloud/api/systems"
         self.file = ".graphml"
