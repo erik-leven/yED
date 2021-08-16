@@ -899,12 +899,12 @@ class yED:
     def find_hops_dataset(self, my_list):
         if "apply-hops" in my_list:
             for dataset in my_list[2]["datasets"]:
-                if dataset.split()[0] in self.active_nodes:
+                if dataset.split()[0] in self.active_nodes and dataset.split()[0] not in self.hops_dataset:
                     self.hops_dataset.append(dataset.split()[0])
 
         if "hops" in my_list:
             for dataset in my_list[1]["datasets"]:
-                if dataset.split()[0] in self.active_nodes:
+                if dataset.split()[0] in self.active_nodes and dataset.split()[0] not in self.hops_dataset:
                     self.hops_dataset.append(dataset.split()[0]) 
 
         for l in my_list:
